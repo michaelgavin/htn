@@ -6,15 +6,44 @@ topNodes <- function(g, limit=50) {
   return(rev(sort(degree(g))))[1:limit]
 }
 
-addData <- function() {
+addData <- function(dnet, data, edges=T, persons=F) {
   # Passes data from a data.frame to either dnet@edges or dnet@persons
   # For example, distribute results from MALLET across the edgelist
+  if(edges == T){
+    if(class(data) == "data.frame") {
+      dnet@edges = cbind(dnet@edges, data)
+    } else if(class(data) == "character") {
+      if(file.exists(data)) { # If data is a path, read file.
+        data = read.csv(data)
+        
+      }                    # Else, assume a data vector and add to edges
+      dnet@edges = cbind(dnet@edges, data)
+    }
+  } else {
+    if(class(data) == "data.frame") {
+      dnet@persons = cbind(dnet@persons, data)
+    } else if(class(data) == "character") {
+      if(file.exists(data)) {
+        data = read.csv(data)
+      }
+      dnet@persons = cbind(dnet@persons, data)
+    }
+  }
 }
 
 
-extractData <- function() {
+extractData <- function(dnet, file, append=F) {
   # This will take edgelist data and reduce it down to dl@index format, so 
   # users can filter books by network data, or authors / persons.
+  tcps = unique(dnet@edges$TCP)
+  df = dnet@index[which(dnet@index$TCP == tcps),]
+  if(append == T) {
+    current = read.csv(file)
+    write.csv(df, file, append=T)
+  } else {
+    write.csv(df, file)
+  }
+  return(df)
 }
 
 # QUESTION: We probably want some way of helping our users keep track of

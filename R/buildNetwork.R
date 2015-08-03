@@ -8,7 +8,7 @@
 #'  
 #'  
 #' @export
-buildNetwork <- function(dl, names = extractNames(dl), edges = NULL, persons = NULL) {
+buildNetwork <- function(dl, edges = NULL, persons = NULL) {
   dnet <- docNetwork()
   dnet@directory <- dl@directory
   dnet@index <- dl@index
@@ -21,13 +21,13 @@ buildNetwork <- function(dl, names = extractNames(dl), edges = NULL, persons = N
   if (class(edges) == "character" & length(edges) == 1) {
     edges <- read.csv(edges)
   } else {
-    dnet@edges <- extractEdges(dnet)
+    dnet@edges <- data(tcpEdges)
   }
   
   if (class(persons) == "character" & length(persons) == 1) {
     persons <- read.csv(persons)
   } else {
-    dnet@persons <- data.frame()
+    dnet@persons <- data(tcpPersons)
   }
   dnet@graph <- buildGraph(dnet = dnet)
   return(dnet)

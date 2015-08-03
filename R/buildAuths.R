@@ -14,8 +14,11 @@ buildAuths = function(auths, tcp) {
         auth = trim.leading(auth)
         #print(auth)
         #print(auth[3])
-        name = paste(auth[2], auth[1], paste('(', auth[3], ')', sep=""), sep=" ")
+        sub = regexpr("[0-9]{2,}[.|\\?]{1}", auth[3])
+        sub = substr(auth[3], sub, sub + attr(sub, "match.length"))
+        name = paste(paste(auth[1], ",", sep=''), auth[2], sub, sep=" ")
         #print(auth)
+        #browser()
         if(length(name) >0) {
           names[[j]] = name
         } else {

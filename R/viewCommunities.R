@@ -2,6 +2,7 @@ viewCommunities <- function(dnet) {
   comms = unique(dnet@communities$membership)
   names = c()
   comm = c()
+  comms = sort(comms)
   for(i in 1:length(comms)) {
     temp = names(membership(dnet@communities))[which(membership(dnet@communities) == comms[i])]
     names = c(names, temp)
