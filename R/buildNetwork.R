@@ -21,7 +21,7 @@ buildNetwork <- function(dl, edges = NULL, persons = NULL) {
   if (class(edges) == "character" & length(edges) == 1) {
     edges <- read.csv(edges)
   } else {
-    dnet@edges <- data(tcpEdges)
+    dnet@edges <- extractEdges(dnet)
   }
   
   if (class(persons) == "character" & length(persons) == 1) {
@@ -30,5 +30,6 @@ buildNetwork <- function(dl, edges = NULL, persons = NULL) {
     dnet@persons <- data(tcpPersons)
   }
   dnet@graph <- buildGraph(dnet = dnet)
+  dnet@communities <- detectCommunities(dnet, view=F)
   return(dnet)
 }

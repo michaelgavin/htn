@@ -5,7 +5,7 @@
 #' @slot type The algorithm to be used: options include "walktrap" and "betweenness".
 #' 
 #' @export
-detectCommunities <- function(dnet, type="walktrap") {
+detectCommunities <- function(dnet, type="walktrap", view=T) {
   if(type == "walktrap") {
     comms = walktrap.community(dnet@graph)
   } else if(type == "edge.betweenness") {
@@ -14,6 +14,8 @@ detectCommunities <- function(dnet, type="walktrap") {
     comms = betweenness(dnet@graph)
   }
   dnet@communities = comms
-  viewCommunities(dnet)
+  if(view == T) {
+    viewCommunities(dnet)
+  }
   return(comms)
 }

@@ -2,9 +2,16 @@
 #' 
 #' Converts a \code{docNetwork} object into an \code{igraph} object. This step
 #' 
-#' @slot dnet A docNetwork object
+#' @param dnet A docNetwork object
 #' 
-#' @slot draw Logical. If TRUE, will also draw the sociogram.
+#' @param draw Logical. If TRUE, will also draw the sociogram.
+#' 
+#' @return g An igraph object.
+#' 
+#' @examples
+#' 
+#' dnet@graph = buildGraph(dnet, draw=T)
+#' dnet@graph = buildGraph(dnet)
 #' 
 #' @export
 buildGraph <- function(dnet, draw = F) {
