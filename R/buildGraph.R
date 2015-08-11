@@ -16,8 +16,8 @@
 #' @export
 buildGraph <- function(dnet, draw = F) {
   tcps = dnet@index$TCP
-  edges = data(tcpEdges)
-  dnet@edges = edges[which(edges$TCP %in% tcps),]
+#   edges = data(tcpEdges)
+#   dnet@edges = edges[which(edges$TCP %in% tcps),]
   if(length(dnet@persons) == 0){
     g <- graph.data.frame(dnet@edges, directed = F)
   } else {
