@@ -41,8 +41,8 @@ buildNetwork <- function(dl, edges = NULL, persons = NULL) {
   if (class(persons) == "character" & length(persons) == 1) {
     persons <- read.csv(persons)
   } else {
-    persons <- data(tcpPersons)
-    dnet@persons <- persons
+    data(tcpPersons)
+    dnet@persons <- tcpPersons
   }
   dnet@graph <- buildGraph(dnet = dnet)
   dnet@communities <- detectCommunities(dnet, view=F)
