@@ -1,3 +1,9 @@
+#' View the community data associated with the
+#' graph stored in a \code{docNetwork} object.
+#' 
+#' @param dnet  The \code{docNetwork} object that
+#'              holds the community data.
+#'
 viewCommunities <- function(dnet) {
   comms = unique(dnet@communities$membership)
   names = c()

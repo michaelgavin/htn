@@ -11,13 +11,20 @@
 #' @param append  A boolean that sets whether the data should be
 #'                added to the \code{docNetwork} object's \code{edges}
 #'                or if it should replace the existing--or non-existent-
-#'                data.
+#'                data. Default is True.
 #'
 #' @param delim   A character string that shows how the names in your
 #'                data are separated.
+#'                
+#' @return dnet  The modified \code{docNetwork} object.
+#' 
+#' @examples
+#' dnet = importEdges(dnet, file="/path/to/edge/data.csv", delim=',')
+#' dnet = importEdges(dnet, file="/path/to/edge/data.csv")
+#' dnet = importEdges(dnet, file="/path/to/edge/data.csv", append=F)
 importEdges <- function(dnet, file, append = T, delim = ";") {
   edgeData <- read.csv(file, sep=delim)
-  browser()
+  #browser()
 #   newNames <- list()
 #   for (i in 1:nrow(nameData)) {
 #     newNames[[i]] <- unlist(strsplit(nameData[i,1], sep = delim))

@@ -3,6 +3,12 @@
 #' @param auths A string of \code{;} delimeted author names to be separated.
 #' 
 #' @param tcp   The \code{TCP} number associated with the authors.
+#' 
+#' @return df   A \code{data.frame} of the authors for a partuclar tcp number
+#'              of the form name, tcp.
+#'              
+#' @examples
+#' authors = buildAuths(tcp$Author[which(tcp$TCP == "A0005")], "A0005")
 buildAuths = function(auths, tcp) {
   trim.leading <- function (x)  sub("^\\s+", "", x)
   names = c()

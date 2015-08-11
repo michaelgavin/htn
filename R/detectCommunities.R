@@ -1,9 +1,19 @@
 #' Find communities in a graph
 #' 
-#' @slot dnet A document network
+#' @param dnet A document network
 #' 
-#' @slot type The algorithm to be used: options include "walktrap" and "betweenness".
+#' @param type The algorithm to be used: options include "walktrap" and "betweenness".
 #' 
+#' @param view A logical that indicates whether you want to view the communities
+#'             after detecting them or not. Default is True.
+#' 
+#' @return comms The \code{communities} object that holds the communities that
+#'               were detected in \code{g}
+#' 
+#' @examples
+#' dnet@communities = detectCommunities(dnet, type="edge.betweenness")
+#' dnet@communities = detectCommunities(dnet, view=F)
+#' comms = detectCommunities(dnet)
 #' @export
 detectCommunities <- function(dnet, type="walktrap", view=T) {
   if(type == "walktrap") {
