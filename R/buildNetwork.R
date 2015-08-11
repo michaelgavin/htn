@@ -45,6 +45,6 @@ buildNetwork <- function(dl, edges = NULL, persons = NULL) {
     dnet@persons <- data.frame()#tcpPersons
   }
   dnet@graph <- buildGraph(dnet = dnet)
-  dnet@communities <- detectCommunities(dnet, view=F)
+  dnet@communities <- detectCommunities(dnet, view=T)
   return(dnet)
 }

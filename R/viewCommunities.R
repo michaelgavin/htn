@@ -3,7 +3,8 @@
 #' 
 #' @param dnet  The \code{docNetwork} object that
 #'              holds the community data.
-#'
+#'              
+#' @export
 viewCommunities <- function(dnet) {
   comms = unique(dnet@communities$membership)
   names = c()

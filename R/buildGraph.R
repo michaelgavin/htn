@@ -1,4 +1,5 @@
-#' Build graph
+# 
+#' Build the graph for a \code{docNetwork} object.
 #' 
 #' Converts a \code{docNetwork} object into an \code{igraph} object. This step
 #' 
@@ -10,8 +11,8 @@
 #' 
 #' @examples
 #' 
-#' dnet@graph = buildGraph(dnet, draw=T)
-#' dnet@graph = buildGraph(dnet)
+#' g = buildGraph(dnet, draw=T)
+#' g = buildGraph(dnet)
 #' 
 #' @export
 buildGraph <- function(dnet, draw = F) {

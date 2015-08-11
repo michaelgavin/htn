@@ -11,8 +11,8 @@
 #'               were detected in \code{g}
 #' 
 #' @examples
-#' dnet@communities = detectCommunities(dnet, type="edge.betweenness")
-#' dnet@communities = detectCommunities(dnet, view=F)
+#' communities = detectCommunities(dnet, type="edge.betweenness")
+#' communities = detectCommunities(dnet, view=F)
 #' comms = detectCommunities(dnet)
 #' @export
 detectCommunities <- function(dnet, type="walktrap", view=T) {
