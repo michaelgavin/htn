@@ -16,6 +16,9 @@
 #' @param persons A \code{data.frame} or string that holds the full path to
 #'                a csv file with persons data in it. Must be in the form:
 #'                \code{ID}, \code{Role}. Optional.
+#'                
+#' @param view    A logical that sets whether to display the communities
+#'                after detection or not.
 #' 
 #' @section How to use it:
 #' For each of the parameters (other than the docList), the user can either 
@@ -27,7 +30,7 @@
 #' dnet = buildNetwork(dl, edges="path/to/edges.csv", persons="path/to/persons.csv")
 #'  
 #' @export
-buildNetwork <- function(dl, edges = NULL, persons = NULL) {
+buildNetwork <- function(dl, edges = NULL, persons = NULL, view=F) {
   dnet <- docNetwork()
   dnet@directory <- dl@directory
   dnet@index <- dl@index
@@ -45,6 +48,6 @@ buildNetwork <- function(dl, edges = NULL, persons = NULL) {
     dnet@persons <- data.frame()#tcpPersons
   }
   dnet@graph <- buildGraph(dnet = dnet)
-  dnet@communities <- detectCommunities(dnet, view=T)
+  dnet@communities <- detectCommunities(dnet, view=view)
   return(dnet)
 }

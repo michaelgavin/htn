@@ -1,0 +1,70 @@
+---
+title: "Getting Started with `htn`"
+author: "Travis Mullen"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+##Introduction:
+This tutorial will walk you through the basics of using the `htn` package.  The Historical Text Network package builds on the `tei2r` package's meta-data  management funcitonality.  `htn` uses the `docList` data to generate a social (print) network for a given corpus. We'll go from building a `docList` to graphing the print network of a corpus and it'll only take us a few commands.
+
+The `tei2r` package includes several sample data sets.  We'll be using the `natlaw` corpus in this example.  This example will cover:
+
+  1. Building a `docList` object using sample data.
+  1. Graphing a corpus using `htn`'s `buildNetwork` function.
+  1. Drawing the graph with and without coloring by communities.
+  1. Drawing the graph of a specific community.
+
+***
+##Building a `docList` object using sample data
+We'll start by building a `docList` object using the `buidDocList` function from `tei2r`.  In order to do this, we'll need to load the `tei2r` package and call the function with the sample data.
+
+```{r}
+library(tei2r)
+dl = buildDocList(directory = system.file('extdata/natlaw/', package='tei2r'), indexFile=system.file('extdata/natlaw/index.csv', package='tei2r'))
+```
+
+##Graphing our Corpus
+Ok, we've loaded the `natlaw` data set and stored our `docList` in an object called `dl`.  Now we can generate a network object and graph with one command:
+```{r}
+library(htn)
+library(igraph)
+dnet = buildNetwork(dl)
+```
+Now we've built our `docNetwork` object using the `natlaw` dataset.  `htn` has already built the graph, which is accessable through `dnet@graph` and detected the communities which are accessable through `dnet@communities`.
+
+##Drawing the Graph
+From here, it's easy to draw a graph using `htn`'s `drawGraph` function.  Let's try a basic graph:
+```{r, fig.width=8, fig.height=8}
+drawGraph(dnet@graph)
+```
+
+This is a pretty basic graph that doesn't tell us much.  It would be more helpful to see the network drawn with distinct communities.  We can do that by passing our `dnet@communities` value to `drawGraph`'s `comms` parameter. Let's see what communities `htn` has found in our corpus:
+```{r, fig.width=8, fig.height=8}
+drawGraph(dnet@graph, comms=dnet@communities)
+```
+
+##Drawing the Graph of a Specific Community
+I noticed that John Milton's community is fairly large and well connected and I would like to look more closely at it.  To do this, we'll need to figure out which community Milton belongs in. We can do that by running the command:
+```r
+viewCommunities(dnet)
+```
+Now we can graph Milton's community by using the same command as before and setting `sub=T` and `by=2`:
+```{r, fig.height=8, fig.width=8, warning=F}
+drawGraph(dnet@graph, comms=dnet@communities, sub=T, by=2)
+```
+
+##Summary
+Now you can create a corpus and graph it in just a few steps using `tei2r` and `htn`!  Below you'll find a condensed version of what we've done above:
+```{r, fig.height=8, fig.width=8, warning=F}
+library(tei2r)
+library(htn)
+library(igraph)
+dl = buildDocList(directory = system.file('extdata/natlaw/', package='tei2r'), indexFile=system.file('extdata/natlaw/index.csv', package='tei2r'))
+drawGraph(dnet@graph)
+drawGraph(dnet@graph, comms=dnet@communities)
+drawGraph(dnet@graph, comms=dnet@communities, sub=T, by=2)
+```
