@@ -42,7 +42,7 @@ buildNetwork <- function(dl, edges = NULL, persons = NULL) {
     persons <- read.csv(persons)
   } else {
     data(tcpPersons)
-    dnet@persons <- tcpPersons
+    dnet@persons <- unique(tcpPersons)
   }
   dnet@graph <- buildGraph(dnet = dnet)
   dnet@communities <- detectCommunities(dnet, view=F)
