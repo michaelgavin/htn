@@ -14,7 +14,7 @@ extractEdges <- function(dnet) {
   tcps = unique(dnet@index$TCP)
   namesList = list()
   data(tcpEdges)
-  edges = defEdges[which(tcpEdges$TCP %in% tcps),]
+  edges = tcpEdges[which(tcpEdges$TCP %in% tcps),]
   # For each item in dnet@names, distribute into undirected edgelist
 #   if(class(dnet) == "docList") {
 #     names = extractNames(dnet)
