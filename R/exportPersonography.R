@@ -18,6 +18,7 @@
 #' 
 #' personography = exportPersonography(g=g, filename="persons.csv", dnet=dnet)
 #' 
+#' @export
 exportPersonography <- function(g, filename="personography.csv", dnet=NULL) {
   persons = V(g)
   names = c()
