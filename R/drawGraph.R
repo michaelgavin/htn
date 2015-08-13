@@ -42,11 +42,8 @@ drawGraph = function(g, comms = NULL, sub=F, by=0, color='blue', labelSize=.75, 
     plot(subg)
     return(subg)
   } else {
-    # Comms colors still not quite working.  Having trouble with 
-    # weird error: communities$membership '$ not valid for atomic..'
-    # communities is not atomic and I'm not using '$' sign.
     if(!is.null(comms)) {
-      print(is.atomic(comms))
+      #print(is.atomic(comms))
       #mems = communities["membership"]
       palette = rainbow(max(membership(comms)))
       V(g)$color = palette[membership(comms)]

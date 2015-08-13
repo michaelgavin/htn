@@ -15,18 +15,65 @@
 #' g = buildGraph(dnet)
 #' 
 #' @export
-buildGraph <- function(dnet, draw = F) {
+buildGraph <- function(dnet, draw = F, byVar=F) {
   tcps = dnet@index$TCP
 #   edges = data(tcpEdges)
 #   dnet@edges = edges[which(edges$TCP %in% tcps),]
-  if(length(dnet@persons) == 0){
-    g <- graph.data.frame(dnet@edges, directed = F)
+  if(byVar == F) {
+    edges = persToPersEdges(dnet@edges)
   } else {
-    g <- graph.data.frame(dnet@edges, dnet@persons, directed = F)
+    edges = dnet@edges
+  }
+  if(length(dnet@persons) == 0){
+    g <- graph.data.frame(edges, directed = F)
+  } else {
+    g <- graph.data.frame(edges, dnet@persons, directed = F)
   }
   if(!draw){
     return(g)
   } else {
     drawGraph(dnet)
   }
+}
+
+persToPersEdges <- function(edges) {
+  tcps = unique(as.character(edges$TCP))
+  namesList = list()
+  for(i in 1:length(tcps)) {
+    sub = edges$name[which(edges$TCP == tcps[i])]
+    peeps = unique(sub)
+    peeps = as.character(peeps)
+    namesList[[i]] = peeps
+  }
+  #browser()
+  el = list()
+  for(i in 1:length(namesList)){
+    sorce = c()
+    target = c()
+    type = c()
+    TCP = c()
+    peeps = as.character(namesList[[i]])
+    for(j in 1:length(peeps)){
+      noti = peeps[-j]
+      sorce = c(sorce,rep(peeps[j],length(noti)))
+      if(length(noti) >= 1){
+        target = c(target,noti)
+      } else {
+        target = c(target, "NA")
+      }
+      type = c(type, rep("undirected", length(noti)))
+      TCP = c(TCP, rep(as.character(edges$TCP[i]), length(noti)))
+    }
+    if(!(length(sorce) < 1)) {
+      mat = cbind(sorce,target,type,TCP)
+      el[[i]] = mat
+    }
+    
+  }
+  el = do.call(rbind, el)
+  el = data.frame(el)
+  el$weight = 1
+  el = aggregate(el$weight,by=as.list(el[,1:4]),FUN=sum)
+  names(el) = c("source","target","type", "TCP", "weight")
+  return(el)
 }

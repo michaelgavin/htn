@@ -15,7 +15,6 @@ addData <- function(dnet, data, edges=T, persons=F) {
     } else if(class(data) == "character") {
       if(file.exists(data)) { # If data is a path, read file.
         data = read.csv(data)
-        
       }                    # Else, assume a data vector and add to edges
       dnet@edges = cbind(dnet@edges, data)
     }
@@ -29,21 +28,31 @@ addData <- function(dnet, data, edges=T, persons=F) {
       dnet@persons = cbind(dnet@persons, data)
     }
   }
+  return(dnet)
 }
 
 
-extractData <- function(dnet, file, append=F) {
+extractData <- function(dnet, file, append=F, sub=F, comms=NULL, by=0) {
   # This will take edgelist data and reduce it down to dl@index format, so 
   # users can filter books by network data, or authors / persons.
-  tcps = unique(dnet@edges$TCP)
-  df = dnet@index[which(dnet@index$TCP == tcps),]
-  if(append == T) {
-    current = read.csv(file)
-    write.csv(df, file, append=T)
+  if(sub == F) {
+    tcps = unique(dnet@edges$TCP)
+    df = dnet@index[which(dnet@index$TCP %in% tcps),]
+    if(append == T) {
+      current = read.csv(file)
+      write.csv(df, file, append=T)
+    } else {
+      write.csv(df, file)
+    }
+    return(df)
   } else {
-    write.csv(df, file)
+    if(!is.null(comms)) {
+      subg = subgraph(dnet@graph, v=V(dnet@graph)[which(membership(comms) == by)])
+      data = E(subg)$TCP
+      write.csv(data, file, append=append)
+      return(data)
+    }
   }
-  return(df)
 }
 
 # QUESTION: We probably want some way of helping our users keep track of

@@ -30,7 +30,7 @@
 #' dnet = buildNetwork(dl, edges="path/to/edges.csv", persons="path/to/persons.csv")
 #'  
 #' @export
-buildNetwork <- function(dl, edges = NULL, persons = NULL, view=F) {
+buildNetwork <- function(dl, edges = NULL, persons = NULL, view=F, byVar=F) {
   dnet <- docNetwork()
   dnet@directory <- dl@directory
   dnet@index <- dl@index
@@ -47,7 +47,8 @@ buildNetwork <- function(dl, edges = NULL, persons = NULL, view=F) {
     data(tcpPersons)
     dnet@persons <- data.frame()#tcpPersons
   }
-  dnet@graph <- buildGraph(dnet = dnet)
+  browser()
+  dnet@graph <- buildGraph(dnet = dnet, byVar=byVar)
   dnet@communities <- detectCommunities(dnet, view=view)
   return(dnet)
 }

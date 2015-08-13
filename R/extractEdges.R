@@ -12,7 +12,7 @@
 #'  
 extractEdges <- function(dnet) {
   tcps = unique(dnet@index$TCP)
-  namesList = list()
+  #namesList = list()
   data(tcpEdges)
   edges = tcpEdges[which(tcpEdges$TCP %in% tcps),]
   # For each item in dnet@names, distribute into undirected edgelist
