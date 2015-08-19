@@ -1,0 +1,29 @@
+---
+title: "Moving Data in htn"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+##Introduction
+If you've completed the [htn tutorial]('Getting_started.html'), you've created a network, graphed it, and found a community that you are interested in exploring further.  But how do you get the data out of the graph?  Which documents are part of your chosen community?
+
+In this tutorial, we'll cover adding and extracting data from a `docNetwork` object so that you can do more with your graphs.  To begin, we'll create our `docNetwork` object and graph it (in case you haven't done the [htn tutorial]('Getting_started.html')).
+
+```{r, fig.height=8, fig.width=8, warning=F}
+library(tei2r)
+library(htn)
+library(igraph)
+dl = buildDocList(directory = system.file('extdata/natlaw/', package='tei2r'), indexFile=system.file('extdata/natlaw/index.csv', package='tei2r'))
+dnet = buildNetwork(dl, view=T)
+drawGraph(dnet@graph, comms=dnet@communities)
+```
+
+Now let's find out which documents are in our chosen community.  We can extract the `TCP` numbers for the documents pretty easily by running:
+```{r, warning=F}
+results = extractData(dnet = dnet, comms=dnet@communities, file="", sub=T, by=2)
+results
+```

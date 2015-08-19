@@ -8,7 +8,7 @@ persons, build the graph, and detect the communities
 within that graph.  The default type of community
 detection is \code{walktrap}.}
 \usage{
-buildNetwork(dl, edges = NULL, persons = NULL)
+buildNetwork(dl, edges = NULL, persons = NULL, view = F, byVar = F)
 }
 \arguments{
 \item{dl}{A \code{docList} object that contains the \code{index}
@@ -23,6 +23,9 @@ buildNetwork(dl, edges = NULL, persons = NULL)
 \item{persons}{A \code{data.frame} or string that holds the full path to
                a csv file with persons data in it. Must be in the form:
                \code{ID}, \code{Role}. Optional.}
+
+\item{view}{A logical that sets whether to display the communities
+               after detection or not.}
 }
 \description{
 This function constructs a \code{docNetwork} object from

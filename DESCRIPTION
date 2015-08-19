@@ -1,11 +1,20 @@
 Package: htn
 Type: Package
-Title: What the package does (short line)
-Version: 1.0
-Date: 2015-07-28
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
-Suggests: knitr
+Title: Build a historical text network.
+Version: 0.0.0.9001
+Date: 2015-05-30
+Author: c(person("Michael","Gavin", email = "mgavin@mailbox.sc.edu", role =
+    c("aut", "cre")), person("Travis","Mullen", email =
+    "tmullen@email.sc.edu",role = "aut")
+Maintainer: Michael Gavin <michael.a.gavin@gmail.com>
+Description: This package extends tei2r and allows users to create networks
+              of the corpuses they are using in tei2r.
+Imports:
+    igraph,
+    stringr
+Suggests:
+    knitr,
+    mallet,
+    tools
+License: CC0 (http://bit.ly/1F96Zgp)
 VignetteBuilder: knitr

@@ -39,20 +39,20 @@ buildGraph <- function(dnet, draw = F, byVar=F) {
 persToPersEdges <- function(edges) {
   tcps = unique(as.character(edges$TCP))
   namesList = list()
-  for(i in 1:length(tcps)) {
-    sub = edges$name[which(edges$TCP == tcps[i])]
-    peeps = unique(sub)
-    peeps = as.character(peeps)
-    namesList[[i]] = peeps
-  }
+#   for(i in 1:length(tcps)) {
+#     sub = edges$name[which(edges$TCP == tcps[i])]
+#     peeps = unique(sub)
+#     peeps = as.character(peeps)
+#     namesList[[i]] = peeps
+#   }
   #browser()
   el = list()
-  for(i in 1:length(namesList)){
+  for(i in 1:length(tcps)){
     sorce = c()
     target = c()
     type = c()
     TCP = c()
-    peeps = as.character(namesList[[i]])
+    peeps = as.character(unique(edges$name[which(edges$TCP == tcps[i])]))
     for(j in 1:length(peeps)){
       noti = peeps[-j]
       sorce = c(sorce,rep(peeps[j],length(noti)))
@@ -62,8 +62,16 @@ persToPersEdges <- function(edges) {
         target = c(target, "NA")
       }
       type = c(type, rep("undirected", length(noti)))
-      TCP = c(TCP, rep(as.character(edges$TCP[i]), length(noti)))
+      TCP = c(TCP, rep(as.character(tcps[i]), length(noti)))
     }
+    
+#     all = cbind(sorce, target)
+#     rev = cbind(target, sorce)
+#     all = rbind(all, rev)
+#     final = as.data.frame(unique(all), stringsAsFactors = F)
+#     #browser()
+#     sorce = final$sorce
+#     target = final$target
     if(!(length(sorce) < 1)) {
       mat = cbind(sorce,target,type,TCP)
       el[[i]] = mat

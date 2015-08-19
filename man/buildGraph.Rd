@@ -4,7 +4,7 @@
 \alias{buildGraph}
 \title{Build the graph for a \code{docNetwork} object.}
 \usage{
-buildGraph(dnet, draw = F)
+buildGraph(dnet, draw = F, byVar = F)
 }
 \arguments{
 \item{dnet}{A docNetwork object}

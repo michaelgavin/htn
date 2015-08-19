@@ -47,7 +47,6 @@ buildNetwork <- function(dl, edges = NULL, persons = NULL, view=F, byVar=F) {
     data(tcpPersons)
     dnet@persons <- data.frame()#tcpPersons
   }
-  browser()
   dnet@graph <- buildGraph(dnet = dnet, byVar=byVar)
   dnet@communities <- detectCommunities(dnet, view=view)
   return(dnet)
