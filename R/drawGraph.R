@@ -6,16 +6,24 @@
 #' 
 #' @param sub Logical. If true, only a subset of the graph will be printed.
 #' 
-#' @param   by A numeric or character vector. If only a subset of the graph will
-#'          be drawn, \code{by} controls which part of the graph will be chosen
-#'          for plotting. This can either take the form of an integer (in which
-#'          case it represents the number of a sub-community within the graph)
-#'          or it can be a vector of TCP ids (in which case it selects only a 
-#'          subset of the document collection for graphing).
-#'          
-#' @param color  A string that defines the color of the nodes in the graph.
+#' @param communities Logical. If TRUE (default), the function will use the
+#'                    communities data in \code{docNetwork@communities} slot
+#'                    and assign different colors to each community. If FALSE,
+#'                    the color will be determine by the \code{color} parameter.
+#'                    
+#' @param design Options for the design of the graph layout. All options inherited
+#'               from the \code{igraph} package. Default is \code{layout.auto}, but
+#'               other common options include \code{layout.fructerman.reingold} or
+#'               \code{layout.circle}. Note that these layout options are actually
+#'               R objects in the igraph environment, and so should not be placed
+#'               in quotation marks when used here.
 #' 
-#' @param labelSize  A numeric value that sets the size of the labels for the nodes.
+#' @param color  A string that defines the color of the nodes in the graph, if
+#'               you want all nodes to be a single color. Default is dark red.
+#' 
+#' @param labelSize  A numeric value that sets the size of the labels for the 
+#'                   nodes. To remove the labels altogether (often necessary
+#'                   for larger graphs), just set the size to 0. 
 #' 
 #' @param nodeSize   A numeric value that sets the size of the nodes.
 #' 
@@ -24,36 +32,26 @@
 #' to generate easy-to-read results quickly. More advanced plotting
 #' options are available directly through \code{igraph}.
 #' 
+#' @examples 
+#' drawGraph(dnet)
+#' drawGraph(dnet, labelSize = 0)
+#' 
 #' @export
-drawGraph = function(g, comms = NULL, sub=F, by=0, color='blue', labelSize=.75, nodeSize=5) {
-  if(sub == T) {
-    if(class(by) == "character") {
-      subg = subgraph.edges(g, eids=E(g)[which(E(g)$TCP %in% by)])
-    } else {
-      # If we're only passing in g, this is potentially problematic.
-      # Changed this from dnet@communities.  Will require communities
-      # to be passed in here if want to sub by communities.  Won't
-      # affect code for graphing whole graph with comms.
-      subg = subgraph(g, v=V(g)[which(membership(comms) == by)])
-    }
-    V(subg)$color = color
-    V(subg)$label.cex = labelSize
-    V(subg)$size = nodeSize
-    plot(subg)
-    return(subg)
+drawGraph = function(dnet, communities = T, design = layout.auto, color= "darkred", labelSize=.5, nodeSize=3) {
+  g = dnet@graph
+  comms = dnet@communities
+  if (communities == T) {
+    palette = rainbow(max(membership(comms)))
+    V(g)$color = palette[membership(comms)]
   } else {
-    if(!is.null(comms)) {
-      #print(is.atomic(comms))
-      #mems = communities["membership"]
-      palette = rainbow(max(membership(comms)))
-      V(g)$color = palette[membership(comms)]
-    } else {
-      V(g)$color = color
-    }
-    V(g)$label.cex = labelSize
-    V(g)$size = nodeSize
-    #g$layout = layout.graphopt(g)
-    plot(g)
+    V(g)$color = color
   }
+  V(g)$label.cex = labelSize
+  V(g)$size = nodeSize
+  if (labelSize == 0) {
+    V(g)$label = ""
+  }
+  plot(g, layout = design)
 }
+
 

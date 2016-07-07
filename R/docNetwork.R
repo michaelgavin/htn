@@ -22,7 +22,7 @@
 #' @slot communities A \code{communities} object that stores the
 #'                   community data derived from \code{graph}.
 #'
-#'
+#' @export
 docNetwork <- setClass("docNetwork",
                        slots = c(directory    = "character", 
                                  index        = "data.frame",

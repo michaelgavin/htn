@@ -1,0 +1,63 @@
+---
+title: "Parsing the Imprint"
+author: "Michael Gavin"
+date: "January 27, 2016"
+output: html_document
+---
+
+Inspired by the incredible work over at the [Early Modern OCR Project](http://emop.tamu.edu) (eMOP) led by Laura Mandell, I thought I should share some of the inital work I've done parsing early modern imprints. eMOP recently released data from their project in XML form, linking parsed imprints to EEBO-TCP and ESTC data. Their files can be found here: <https://github.com/Early-Modern-OCR/ImprintDB>
+
+Identifying and differentiating the printers and booksellers who produced old books is rarely a straightforward process. Publication data from title pages are notoriously irregular. Spelling variation in names, and incomplete or inaccurate attribution, is common. Names are often given in Latin and often listed only as initials. As a result, title page imprints appear in forms like this, "London: printed by T.N. for H. Heringman." For this reason, library catalogs, which have been inherited by digital projects like Early English Books Online, typically offer only the character string of each imprint, leaving it to human readers to figure out who these people are.
+
+Cleaning up publication metadata and making it available for search and analysis would have many important research applications for scholars working on the history of publishing, authorship, and other areas of print history. My own interests are in network analysis. Who published with whom? How did different political, religious, and literary ideas circulate in the print marketplace? Especially now that so much of the early record is available in full-text form, improving the metadata is a major task facing scholars right now. 
+
+Matthew Christy, eMOP's co-project manager and lead developer, worked with their team to break the imprints up into attribution statements, marking out "Printed for" and "Printed by" relationships. Their work is hugely valuable. Working with Travis Mullen here at the University of South Carolina, we tackled the problem from a different angle. Our goal was to pull out the names to see if we can reconcile common entities across the catalog. If one book was attributed to "T.N.", another to "Thomas Newcombe", and a third to "T. Newcomb", we wanted each to be attributed to the same person. Using a combination of algorithmic and hand-corrected methods, we figured this should be doable. The results are here: <http://github.com/michaelgavin>
+
+Before delving into our process, a few caveats should be kept in mind. First of all, imprints, as I mentioned above, are less than perfectly reliable. Names were often left off completely; sometimes false names were added in their place. Like eMOP's, our technique does nothing to solve this problem. We can only parse the information available. Even in the case of false imprints, though, it makes sense to us to capture what the books actually say.
+
+Second, we haven't yet reconciled the names to existing name authority files, like those published by the Library of Congress or VIAF. Many of our printers and booksellers are included in linked data resources, but many aren't. In the long term, we'd like to get them all into shape to be linked up to other resources, but we have set that ambition aside for now.
+
+Third, because of ideological and practical motives, we looked only at books freely available from the EEBO Text Creation Partnership. On princliple, I don't really like working with proprietary data. Even among the freely available stuff through, there were practical problems. American imprints from Evans and eighteenth-century books from ECCO were far more difficult to process (for reasons that will be clear).
+
+Lastly, as with any computer-aided process, some errors slipped through, so our data's still far from perfect. The intial pass returned a little over 30,000 attributions, and of those about 5% were easy-to-spot errors. We tried to clean out by hand, but errors and omissions certainly remain. I am putting the initial data out now, in part, to invite collaboration from anyone who might be interested in building up or further correcting the metadata.
+
+###What did we do?
+
+Basically, we designed a little decision-tree algorithm to read each imprint, pull out name words, and then find likely matches in the [British Book Trade Index](http://bbti.bodleian.ox.ac.uk). 
+
+What makes the BBTI a great resource is that they include almost everything. If a name is on an imprint, there's a very good chance that it's somewhere in the BBTI. The other great thing about BBTI is that, although they don't standarize their names, they do provide one crucial piece of data: trade dates. Unlike birth or death years, trade dates refer to a person's professional life. The inital trade date is usually the year of the first imprint they appear on or the year they were taken on as an apprentice. This means we didn't have to search the entire BBTI for every book, we just had to look for names in the small subset of stationers active around the time of each book.
+
+We designed a custom set of processing rules for the imprints. Names of streets and neighborhoods were taken out, as were names of bookshops. So 
+
+```
+"Oxon : Printed by L. Lichfield and are to be sold by A. Stephens, 1683."
+```
+gets reduced to a vector of five words:
+```
+[1] "Oxon" "L" "Lichfield" "A" "Stephens"
+```
+
+The core process then had three steps:
+
+1. Subset the BBTI to look only at entries where the initial trade date was within range of the imprint date.
+2. For each word in the imprint, search by last name, looking for matches or near matches.
+3. Then, look at the word to the left of the target word in the imprint. Select only those with the same first letter, then choose the closest match. If there are multiple matches or no matches, just skip to the next word in the imprint.
+
+Using the example above, the algorthim searched through several possibilities.
+```
+"Oxon L" "L Lichfield" "Lichfield A" and "A Stephens"
+```
+The first and the third didn't hit any matches. The second and the fourth returned these two:
+
+```
+bbtiID                         name    TCP                               Role
+483541   Lichfield, Leonard II 1657 A36460  Printer, Bookseller (antiquarian)
+483551       Stephens, Anthony 1657 A36460                         Bookseller
+```
+The result was almost always the exact name I would have chosen, if I'd looked it up by hand. The system differentiates Lichfield Jr. from Leonard Lichfield Sr. by the publication date, and the roles are just the occupation titles given by BBTI. Unlike eMOP's, these don't differentiate "Printed for" from "Printed by" statements, but the roles seemed generally very consistent. (It'll be interesting now to cross reference my results with theirs.) Overall the algorithm did a good job catching spelling variation (even, often, the Latin) while also distinguishing the Jacobs and Johns from the Josephs. 
+
+There were lots of special cases that had to be handled separately. Because of "Saint Paul's Churchyard" in all its variation, the name "Paul" was particularly difficult and had to have its own set of pre-processing rules. First-name last names like "Johnson,"" "Thomson," or "Williams," caused lots of little problems, but they were easy to clean out in post-processing. Names like "Iohn" and "VViliam" were changed in pre-processing to "John" and "William." There were quite a few cases like these, but not too many for the relatively small EEBO dataset. Our technique might not scale up to the entire ESTC, though. As I mentioned above, about 5% of the results were obviously false matches, and I have no doubt that a small number slipped through my attempts to catch them by hand.  The ESTC is an order of magnitude larger, which means the initial results would need to be better. Also, because our algorithim looks for first name or first initial matches, it doesn't work nearly as well on eighteenth-century imprints, when many printers and sellers referred to themselves as "Mr. So-and-so." Some adjustments would need to be made.
+
+Overall, after hand correction, the process resulted in 28,931 stationer attributions over 22,016 EEBO-TCP entries.
+
+The dataset is up on Github: <http://github.com/michaelgavin>
