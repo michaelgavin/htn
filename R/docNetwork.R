@@ -1,3 +1,4 @@
+#' A network graph with corresponding bibliographical index
 #'
 #'  An S4 class that represents the network of a collection of
 #'  documents.  This object stores the meta-data for the

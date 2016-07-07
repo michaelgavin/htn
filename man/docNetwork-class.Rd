@@ -4,9 +4,7 @@
 \name{docNetwork-class}
 \alias{docNetwork}
 \alias{docNetwork-class}
-\title{An S4 class that represents the network of a collection of
- documents.  This object stores the meta-data for the
- social/print network of a corpus.}
+\title{A network graph with corresponding bibliographical index}
 \description{
 An S4 class that represents the network of a collection of
  documents.  This object stores the meta-data for the

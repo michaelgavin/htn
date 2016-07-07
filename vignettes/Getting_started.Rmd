@@ -1,6 +1,6 @@
 ---
 title: "Getting Started with `htn`"
-author: "Travis Mullen"
+author: "Travis Mullen and Michael Gavin"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -9,14 +9,18 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 ##Introduction:
-This tutorial will walk you through the basics of using the `htn` package.  The Historical Text Network package builds on the `tei2r` package's meta-data  management funcitonality.  `htn` uses the `docList` data to generate a social (print) network for a given corpus. We'll go from building a `docList` to graphing the print network of a corpus and it'll only take us a few commands.
+This tutorial will walk you through the basics of using the `htn` package.  The Historical Text Network package builds on the `tei2r` package's meta-data  management funcitonality.  `htn` uses the `docList` data to generate a social network for a given collection (typically, some subset of the EEBO-TCP). A typical use case would be to use `tei2r` to grab all the documents published in a given year, then to use `htn` to see how the authors, printers, and booksellers working in that year sorted into communities. 
+
+The main purpose of historical text network analysis is to bridge the divide between text analysis and social network analysis. This package is designed to move in and out of different scales of analysis to compare and contrast lexical features of documents that appear in different communities.
+
+We'll go from building a `docList` using `tei2r' to graphing the print network of a corpus, and it'll only take us a few commands.
 
 The `tei2r` package includes several sample data sets.  We'll be using the `natlaw` corpus in this example.  This example will cover:
 
   1. Building a `docList` object using sample data.
-  1. Graphing a corpus using `htn`'s `buildNetwork` function.
-  1. Drawing the graph with and without coloring by communities.
-  1. Drawing the graph of a specific community.
+  2. Graphing a corpus using `htn`'s `buildNetwork` function.
+  3. Drawing the graph with and without coloring by communities.
+  4. Drawing the graph of a specific community.
 
 ***
 ##Building a `docList` object using sample data
@@ -24,27 +28,26 @@ We'll start by building a `docList` object using the `buidDocList` function from
 
 ```{r}
 library(tei2r)
-dl = buildDocList(directory = system.file('extdata/natlaw/', package='tei2r'), indexFile=system.file('extdata/natlaw/index.csv', package='tei2r'))
+data(natlaw)
+setup(natlaw)
 ```
+
+As you can see, these commands build a `docList` of publications having to do with seventeenth-century natural law. The `setup` command imports all the data, normalizes the texts, and preps them for analysis.
 
 ##Graphing our Corpus
 Ok, we've loaded the `natlaw` data set and stored our `docList` in an object called `dl`.  Now we can generate a network object and graph with one command:
+
 ```{r}
 library(htn)
-library(igraph)
 dnet = buildNetwork(dl)
 ```
+
 Now we've built our `docNetwork` object using the `natlaw` dataset.  `htn` has already built the graph, which is accessable through `dnet@graph` and detected the communities which are accessable through `dnet@communities`.
 
 ##Drawing the Graph
-From here, it's easy to draw a graph using `htn`'s `drawGraph` function.  Let's try a basic graph:
+From here, it's easy to draw a graph using `htn`'s `drawGraph` function. By default, colors are assigned to the communities found when the network is built.
 ```{r, fig.width=8, fig.height=8}
-drawGraph(dnet@graph)
-```
-
-This is a pretty basic graph that doesn't tell us much.  It would be more helpful to see the network drawn with distinct communities.  We can do that by passing our `dnet@communities` value to `drawGraph`'s `comms` parameter. Let's see what communities `htn` has found in our corpus:
-```{r, fig.width=8, fig.height=8}
-drawGraph(dnet@graph, comms=dnet@communities)
+drawGraph(dnet)
 ```
 
 ##Drawing the Graph of a Specific Community

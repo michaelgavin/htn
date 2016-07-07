@@ -2,7 +2,11 @@
 title: "Parsing the Imprint"
 author: "Michael Gavin"
 date: "January 27, 2016"
-output: html_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 Inspired by the incredible work over at the [Early Modern OCR Project](http://emop.tamu.edu) (eMOP) led by Laura Mandell, I thought I should share some of the inital work I've done parsing early modern imprints. eMOP recently released data from their project in XML form, linking parsed imprints to EEBO-TCP and ESTC data. Their files can be found here: <https://github.com/Early-Modern-OCR/ImprintDB>
@@ -54,10 +58,17 @@ bbtiID                         name    TCP                               Role
 483541   Lichfield, Leonard II 1657 A36460  Printer, Bookseller (antiquarian)
 483551       Stephens, Anthony 1657 A36460                         Bookseller
 ```
-The result was almost always the exact name I would have chosen, if I'd looked it up by hand. The system differentiates Lichfield Jr. from Leonard Lichfield Sr. by the publication date, and the roles are just the occupation titles given by BBTI. Unlike eMOP's, these don't differentiate "Printed for" from "Printed by" statements, but the roles seemed generally very consistent. (It'll be interesting now to cross reference my results with theirs.) Overall the algorithm did a good job catching spelling variation (even, often, the Latin) while also distinguishing the Jacobs and Johns from the Josephs. 
+The result was almost always the exact name I would have chosen, if I'd looked it up by hand. The system differentiates Lichfield Jr. from Leonard Lichfield Sr. by the publication date, and the roles are just the occupation titles given by BBTI. Unlike eMOP's, these don't differentiate "Printed for" from "Printed by" statements, but the roles seemed generally very consistent. (It'll be interesting now to cross reference our results with theirs.) Overall the algorithm did a good job catching spelling variation (even, often, the Latin) while also distinguishing the Jacobs and Johns from the Josephs.
 
-There were lots of special cases that had to be handled separately. Because of "Saint Paul's Churchyard" in all its variation, the name "Paul" was particularly difficult and had to have its own set of pre-processing rules. First-name last names like "Johnson,"" "Thomson," or "Williams," caused lots of little problems, but they were easy to clean out in post-processing. Names like "Iohn" and "VViliam" were changed in pre-processing to "John" and "William." There were quite a few cases like these, but not too many for the relatively small EEBO dataset. Our technique might not scale up to the entire ESTC, though. As I mentioned above, about 5% of the results were obviously false matches, and I have no doubt that a small number slipped through my attempts to catch them by hand.  The ESTC is an order of magnitude larger, which means the initial results would need to be better. Also, because our algorithim looks for first name or first initial matches, it doesn't work nearly as well on eighteenth-century imprints, when many printers and sellers referred to themselves as "Mr. So-and-so." Some adjustments would need to be made.
+There were lots of special cases that had to be handled separately. Because of "Saint Paul's Churchyard" in all its variation, the name "Paul" was particularly difficult and had to have its own set of pre-processing rules. First-name last names like "Johnson,"" "Thomson," or "Williams" caused lots of little problems, but they were easy to clean out in post-processing. Names like "Iohn" and "VViliam" were changed in pre-processing to "John" and "William." There were quite a few cases like these, but not too many for the relatively small EEBO dataset. Our technique might not scale up to the entire ESTC, though. As I mentioned above, about 5% of the results were obviously false matches, and I have no doubt that a small number slipped through my attempts to catch them by hand. No effort has yet been made to measure the accuracy of the dataset as it exists,The ESTC is an order of magnitude larger, which means the initial results would need to be better. Also, because our algorithim looks for first name or first initial matches, it doesn't work nearly as well on eighteenth-century imprints, when many printers and sellers referred to themselves as "Mr. So-and-so." Some adjustments would need to be made.
 
-Overall, after hand correction, the process resulted in 28,931 stationer attributions over 22,016 EEBO-TCP entries.
+Overall, after hand correction, the process resulted in about 29,000 stationer attributions over 22,000 EEBO-TCP entries. The total dataset, including authors and others, includes 64,887 attributions over the EEBO, Evans, and ECCO TCP documents.
 
-The dataset is up on Github: <http://github.com/michaelgavin>
+
+I want to emphasize that **this is algorithmically generated data, so it absolutely will contain errors. Use with caution.**
+
+The dataset is up on Github, either in .csv: <http://github.com/michaelgavin/htn/blob/master/imprint_attributions.csv>
+
+or .rda:
+
+<https://github.com/michaelgavin/htn/blob/master/imprint_attr.rda>
