@@ -47,4 +47,7 @@
 #' 
 #' 
 #' @import igraph
+#' 
+#' @docType package
+#' @name htn
 NULL

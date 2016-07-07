@@ -4,7 +4,7 @@
 \alias{detectCommunities}
 \title{Find communities in a graph}
 \usage{
-detectCommunities(dnet, type = "walktrap", view = T)
+detectCommunities(dnet, type = "walktrap")
 }
 \arguments{
 \item{dnet}{A document network}

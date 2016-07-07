@@ -16,7 +16,7 @@
 #' 
 #' @examples
 #' data(dnet)
-#' df = communitySubnetwork(dnet, community = 3, method = "all")
+#' subnet = communitySubnetwork(dnet, community = 3, method = "all")
 #' 
 #' 
 #' @export

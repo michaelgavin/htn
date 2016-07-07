@@ -8,7 +8,7 @@ Author: c(person("Michael","Gavin", email = "mgavin@mailbox.sc.edu", role =
     "tmullen@email.sc.edu",role = "aut")
 Maintainer: Michael Gavin <michael.a.gavin@gmail.com>
 Description: This package extends tei2r and allows users to create networks
-    of the corpuses they are using in tei2r.
+    of the collections use in tei2r.
 Imports:
     igraph,
     stringr
@@ -26,6 +26,9 @@ Collate:
     'drawGraph.R'
     'extractEdges.R'
     'htn.R'
+    'imprints.R'
+    'tcpEdges.R'
+    'tcpPersons.R'
 License: CC0 (http://bit.ly/1F96Zgp)
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

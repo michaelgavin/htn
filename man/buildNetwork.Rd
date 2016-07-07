@@ -4,24 +4,26 @@
 \alias{buildNetwork}
 \title{Convert publication data to network data}
 \usage{
-buildNetwork(dl, edges = NULL, persons = NULL, view = F, byVar = F)
+buildNetwork(dl, edges = NULL, persons = NULL)
 }
 \arguments{
 \item{dl}{A \code{docList} object that contains the \code{index}
 and other meta-data for the corpus that is to be
 networked.}
 
-\item{edges}{A \code{data.frame} or string that holds the full path to
-a csv file with edge data in it. Must be in the form:
-\code{name}, \code{TCP} or other document identifier.
-Optional.}
+\item{edges}{A string that holds the full path to a csv file with edge 
+data in it. Note that, by default, this parameter is set
+to NULL, which tells \code{htn} to infer connections from
+bibliographic data in the \code{docList} index. \strong{If
+you want to supply your own data in .csv, it must be in a
+format \code{igraph} can read, with "source" and "target"
+columns clearly labeled.} See \code{igraph} documentation
+for using your own data.}
 
-\item{persons}{A \code{data.frame} or string that holds the full path to
-a csv file with persons data in it. Must be in the form:
-\code{ID}, \code{Role}. Optional.}
-
-\item{view}{A logical that sets whether to display the communities
-after detection or not.}
+\item{persons}{A string that holds the full path to
+a csv file with persons data in it. Note that, by default,
+this parameter is NULL and draws from the EBBO-TCP data
+included with \code{htn}.}
 }
 \description{
 This function constructs a \code{docNetwork} object from
@@ -30,11 +32,14 @@ persons, build the graph, and detect the communities
 within that graph.  The default type of community
 detection is \code{walktrap}.
 }
-\section{How to use it}{
+\section{Warning}{
 
-For each of the parameters (other than the docList), the user can either 
-provide a data.frame, a character string that connects to a .csv file, 
-or let the default function extract the names.
+Generally, this function is meant to be used with \code{tei2r} and the
+EEBO-TCP data, from which \code{htn} includes data about co-publication. 
+It's very good at taking the EEBO-TCP catalogue or some subset
+of that catalogue and performing network analysis. Using \code{htn} for
+any other collection would require compiling an appropriate
+edge list and personography.
 }
 \examples{
 dnet = buildNetwork(dl)

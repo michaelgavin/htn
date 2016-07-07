@@ -19,9 +19,11 @@
 #'              columns clearly labeled.} See \code{igraph} documentation
 #'              for using your own data.
 #'              
-#' @param persons A \code{data.frame} or string that holds the full path to
-#'                a csv file with persons data in it. Must be in the form:
-#'                \code{ID}, \code{Role}. Optional.
+#' @param persons A string that holds the full path to
+#'                a csv file with persons data in it. Note that, by default,
+#'                this parameter is NULL and draws from the EBBO-TCP data
+#'                included with \code{htn}.
+#'                
 #'                
 #' 
 #' @section Warning:

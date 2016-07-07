@@ -25,7 +25,7 @@ A function that allows a user to extract a \code{docNetwork} from a larger
 }
 \examples{
 data(dnet)
-df = communitySubnetwork(dnet, community = 3, method = "all")
+subnet = communitySubnetwork(dnet, community = 3, method = "all")
 
 
 }
