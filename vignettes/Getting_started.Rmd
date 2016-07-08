@@ -1,6 +1,6 @@
 ---
 title: "Getting Started with `htn`"
-author: "Travis Mullen and Michael Gavin"
+author: "Michael Gavin and Travis Mullen"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -9,40 +9,69 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 ##Introduction:
-This tutorial will walk you through the basics of using the `htn` package.  The Historical Text Network package builds on the `tei2r` package's meta-data  management funcitonality.  `htn` uses the `docList` data to generate a social network for a given collection (typically, some subset of the EEBO-TCP). A typical use case would be to use `tei2r` to grab all the documents published in a given year, then to use `htn` to see how the authors, printers, and booksellers working in that year sorted into communities. 
+This tutorial will walk you through the basics of using the `htn` package.  The Historical Text Network package builds on the `tei2r`'s meta-data  management funcitonality, using the `docList` structure to generate a social network for a given collection (typically, some subset of the EEBO-TCP). A typical use case would be for a scholar to use `tei2r` to import all the documents published in a given year, then to use `htn` to see how the authors, printers, and booksellers working in that year sorted into communities. Once communities are identified, the publications of different groups can be compared lexically.
 
-The main purpose of historical text network analysis is to bridge the divide between text analysis and social network analysis. This package is designed to move in and out of different scales of analysis to compare and contrast lexical features of documents that appear in different communities.
+The main purpose of historical text network analysis is to bridge the divide between text analysis and social network analysis by comparing lexical features of documents that appear in different communities.
 
-We'll go from building a `docList` using `tei2r' to graphing the print network of a corpus, and it'll only take us a few commands.
+This tutorial will cover the basic steps of building a social-network model using `htn`. Keep in mind that `htn` is designed to simplify some of the most common operations used with `igraph` when interfacing with document collections. Users are certain to encounter situations where they want to take advantage of `igraph` functionality that isn't explicitly written into `htn`, so `htn` data objects are designed not to interfere at all with `igraph`'s functions. This is good because it means that you can do anything with `htn` you can do with really sophisticated software. The downside is that you'll probably want to learn `igraph`'s syntax, which is considerably more complicated than `htn`'s. (For a good introduction to `igraph` in general, see Gábor Csárdi and Tamás Nepusz, <http://igraph.org/c/doc/index.html>, but for the R application it's easiest, I think, to consult the documentation directly).
 
-The `tei2r` package includes several sample data sets.  We'll be using the `natlaw` corpus in this example.  This example will cover:
-
-  1. Building a `docList` object using sample data.
-  2. Graphing a corpus using `htn`'s `buildNetwork` function.
-  3. Drawing the graph with and without coloring by communities.
-  4. Drawing the graph of a specific community.
-
-***
-##Building a `docList` object using sample data
-We'll start by building a `docList` object using the `buidDocList` function from `tei2r`.  In order to do this, we'll need to load the `tei2r` package and call the function with the sample data.
-
-```{r}
-library(tei2r)
-data(natlaw)
-setup(natlaw)
+```r
+library(igraph)
+?igraph     #open a help window
 ```
 
-As you can see, these commands build a `docList` of publications having to do with seventeenth-century natural law. The `setup` command imports all the data, normalizes the texts, and preps them for analysis.
+***
+### Building a `docList` object using sample data
+We'll start by building a `docList` object using the `buidDocList` function from `tei2r`.  In order to do this, we'll need to load the `tei2r` package and call the function with the sample data.
 
-##Graphing our Corpus
-Ok, we've loaded the `natlaw` data set and stored our `docList` in an object called `dl`.  Now we can generate a network object and graph with one command:
+If you haven't installed `htn` or `tei2r`, they can be downloaded and installed from Github.
+
+```r
+devtools::install_github("michaelgavin/tei2r", build_vignettes=T)
+devtools::install_github("michaelgavin/htn", build_vignettes=T)
+```
+
+After installation, activate the libraries in import some sample data from `tei2r`.
 
 ```{r}
 library(htn)
-dnet = buildNetwork(dl)
+library(tei2r)
+data(natlaw)
 ```
 
+As you can see, these commands build a `docList` of publications having to do with seventeenth-century natural law. The `setup` command imports all the data, normalizes the texts, and preps them for analysis. All the metadata and complete text of the collection is now in a `docList` named `dl`. (`dl` is the default name for `docLists`, assigned by the `setup` function.)
+
+Now we can generate a network object and graph with one command:
+
+```{r}
+library(htn)
+dnet = buildNetwork(natlaw)
+```
+
+The `buildNetwork()` function performs several operations at once. First, it creates a new data object, `dnet`, that inherits the bibliography of the document collection. Then, using the TCP ID numbers from `dl`'s index, it matches those numbers against publication data stored in `htn`, capturing all of the co-publication events associated with each document.
+
+What is a "co-publication event"? Basically, `htn` treats any time two people are involved in the same book as a connection. If I sell a book you wrote, that's a connection. If you print a book someone dedicated to me, that's a connection. In this way, *historical text networks model print socialities.* That is, they model the social relationships books perform to readers. Sometimes this has weird effects. Many connections occur throughout the network among people who likely never met. The most obvious examples appear when books are published posthumously: the authors get "connected" to printers and booksellers who lived years later, sometimes centuries later. This is why it's best not to think of historical text networks as "social networks" in the colloquial sense of the term. They are models of publication metadata -- of the EEBO-TCP catalogue. They show patterns of publication, not patterns of historical reality as such.
+
+**So what's in a `docNetwork` object?**
+
+The `dnet` object just created is an instance of an S4 class `docNetwork` object. S4 classes are objects with formalized data structures. They're essentially `list`s in R, but unlike regular lists they include rules that say what kinds of data can be stored where. Each item in the list is called a `slot`, and each slot has a special function.
+
+  1. **directory** A string that gives the name of the folder where the documents are stored on your computer.
+  2. **index** A dataframe with the collection's metadata.
+  3. **edges**  A dataframe that stores the connections between people, including the "source" and "target" of each connection and the TCP ID number of the book that connects them.
+  4. **persons** A dataframe that stores the authoritative names and roles for each person in the network.
+  5. **graph** A social-network graph (the data, not the visualization) built using the `igraph` package. These `graph` objects themselves have slots with different kinds of data.
+  6. **communities** A `communities` object (that's `igraph` lingo) that sorts the people into groups.
+
 Now we've built our `docNetwork` object using the `natlaw` dataset.  `htn` has already built the graph, which is accessable through `dnet@graph` and detected the communities which are accessable through `dnet@communities`.
+
+The `igraph` package includes a wide range of community-detection algorithms. By default `htn` uses the "walktrap" method, which performs a random walk of several steps along the graph from each node, then groups nodes together that tend to cross each other.
+
+The only downside to working with R or Python for network analysis, compared to Gephi or Pajek, is that it's often harder to browse one's data in command-line interfaces. To make it easier to read the `communities` object, `htn` includes a hidden function that prints a list of names and communities in R's viewer, rather than in the console. To look at which people are grouped into which communities, just enter this into the command line:
+
+```r
+dnet@communities
+```
 
 ##Drawing the Graph
 From here, it's easy to draw a graph using `htn`'s `drawGraph` function. By default, colors are assigned to the communities found when the network is built.
@@ -51,24 +80,31 @@ drawGraph(dnet)
 ```
 
 ##Drawing the Graph of a Specific Community
-I noticed that John Milton's community is fairly large and well connected and I would like to look more closely at it.  To do this, we'll need to figure out which community Milton belongs in. We can do that by running the command:
+This is a small `docList`, so the communities are mostly disconnected, but you'll notice that there's one larger community where, if you look closely, you'll see that John Milton sits at a very central position. (If you can't read the labels in the console, try exporting the plot to an image file, make that file really big -- a couple thousand pixels or so -- and you'll be able to read the labels just fine.)
+
+To figure out which community Milton belongs in, you can browse through the nodes by pulling up the communities as above:
+
 ```r
-viewCommunities(dnet)
-```
-Now we can graph Milton's community by using the same command as before and setting `sub=T` and `by=2`:
-```{r, fig.height=8, fig.width=8, warning=F}
-drawGraph(dnet@graph, comms=dnet@communities, sub=T, by=2)
+dnet@communities
 ```
 
-##Summary
-Now you can create a corpus and graph it in just a few steps using `tei2r` and `htn`!  Below you'll find a condensed version of what we've done above:
+Or by performing a search using R's `grep` function:
+
+```{r}
+hit = grep("Milton", dnet@communities$name)
+comm_number = dnet@communities$membership[hit]
+```
+
+These two little lines of code do two things. The first searches through the names to find one that includes the string "Milton" and assigns the row number to an object called `hit`. Milton is the sixth person named in the community, so the value of `hit` should be 6. The second line looks through the membership affliation and finds the 6th entry -- or, more precisely, it finds the membership number(s) for whatever the value(s) is/are of `hit`.
+
+Now we can build a subset of the graph that only includes Milton's community.
+
+```{r}
+subnet = communitySubnetwork(dnet, community = comm_number)
+```
+
+This subnetwork can be plotted, just as before.
+
 ```{r, fig.height=8, fig.width=8, warning=F}
-library(tei2r)
-library(htn)
-library(igraph)
-dl = buildDocList(directory = system.file('extdata/natlaw/', package='tei2r'), indexFile=system.file('extdata/natlaw/index.csv', package='tei2r'))
-dnet = buildNetwork(dl)
-drawGraph(dnet@graph)
-drawGraph(dnet@graph, comms=dnet@communities)
-drawGraph(dnet@graph, comms=dnet@communities, sub=T, by=2)
+drawGraph(subnet)
 ```

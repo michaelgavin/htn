@@ -37,5 +37,6 @@ communitySubnetwork = function(dnet, community, method = "internal") {
   
   subnet@graph = suppressWarnings(subgraph(g, V(g)[hits]))
   subnet@index <- communityIndex(dnet= dnet, community = community, method = method)
+  subnet@communities <- detectCommunities(dnet)
   return(subnet)
 }

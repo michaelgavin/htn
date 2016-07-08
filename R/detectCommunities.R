@@ -7,12 +7,12 @@
 #' @param view A logical that indicates whether you want to view the communities
 #'             after detecting them or not. Default is True.
 #' 
-#' @return dnet A \code{dnet} object with a \code{communities} object added into the slot
+#' @return dnet@communities A \code{communities} object added into the slot
 #'              that holds the community data detected.
 #' 
 #' @examples
 #' communities = detectCommunities(dnet, type="edge.betweenness")
-#' dnet = detectCommunities(dnet, view=F)
+#' dnet@communities = detectCommunities(dnet, view=F)
 #' 
 #' @section Note:
 #' This function includes only the "walktrap" and "edge.betweenness" options. For a
@@ -22,7 +22,7 @@
 #' \strong{If you want options added, email the developer for requests.}
 #' 
 #' @examples
-#' dnet <- detectCommunities(dnet)
+#' dnet@communities <- detectCommunities(dnet)
 #' 
 #' # For alternative detection algorithms
 #' fg <- cluster_fast_greedy(simplify(dnet@graph))
@@ -38,5 +38,5 @@ detectCommunities <- function(dnet, type="walktrap") {
     comms = betweenness(dnet@graph)
   }
   dnet@communities = comms
-  return(dnet)
+  return(comms)
 }

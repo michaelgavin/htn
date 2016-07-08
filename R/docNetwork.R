@@ -34,3 +34,12 @@ docNetwork <- setClass("docNetwork",
                        )
 )
 
+print.communities <- function(comms) {
+  n = comms$names
+  m = comms$membership
+  df = data.frame(n,m)[order(m),]
+  row.names(df) = NULL
+  View(df)
+}
+
+

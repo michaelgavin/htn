@@ -57,6 +57,6 @@ buildNetwork <- function(dl, edges = NULL, persons = NULL) {
     dnet@persons <- extractPersons(dnet)
   }
   dnet@graph <- buildGraph(dnet = dnet)
-  dnet <- detectCommunities(dnet)
+  dnet@communities <- detectCommunities(dnet)
   return(dnet)
 }
