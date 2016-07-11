@@ -4,7 +4,7 @@ author: "Michael Gavin and Travis Mullen"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -39,7 +39,7 @@ library(tei2r)
 data(natlaw)
 ```
 
-As you can see, these commands build a `docList` of publications having to do with seventeenth-century natural law. The `setup` command imports all the data, normalizes the texts, and preps them for analysis. All the metadata and complete text of the collection is now in a `docList` named `dl`. (`dl` is the default name for `docLists`, assigned by the `setup` function.)
+As you can see, these commands build a `docList` of publications having to do with seventeenth-century natural law. All the metadata of the collection is now in a `docList` named `natlaw`.
 
 Now we can generate a network object and graph with one command:
 
@@ -80,7 +80,7 @@ drawGraph(dnet)
 ```
 
 ##Drawing the Graph of a Specific Community
-This is a small `docList`, so the communities are mostly disconnected, but you'll notice that there's one larger community where, if you look closely, you'll see that John Milton sits at a very central position. (If you can't read the labels in the console, try exporting the plot to an image file, make that file really big -- a couple thousand pixels or so -- and you'll be able to read the labels just fine.)
+This is a small `docList`, so the communities are mostly disconnected, but you'll notice that there's one larger community where, if you look closely, you'll see that John Milton sits at a very central position.
 
 To figure out which community Milton belongs in, you can browse through the nodes by pulling up the communities as above:
 
@@ -108,3 +108,15 @@ This subnetwork can be plotted, just as before.
 ```{r, fig.height=8, fig.width=8, warning=F}
 drawGraph(subnet)
 ```
+
+This subnetwork also has its own index, which can be viewed just as above.
+
+```r
+View(subnet@index)
+```
+
+The primary purpose of `htn` is to allow this function. By identifying the publications common to a particular subgroup of a larger network, `htn` uses the basic operations of social-network analysis to perform structured searches over the EEBO catalogue, and it allows you to use bibliographic metadata and textual data to operate as filters for the network. The larger purpose is to reconcile social histories of book publishing with "distant reading" approaches to the archive.
+
+### Conclusion
+
+This introduction provided a brief overview of how to create and draw networks from EEBO metadata.  
